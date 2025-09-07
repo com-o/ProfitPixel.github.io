@@ -150,6 +150,14 @@
             }
         }
 
+        function autoFillReferralCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                document.getElementById('referral').value = refCode;
+            }
+        }
+
         function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -173,8 +181,9 @@
             window.location.href = 'desboarth.html';
         }
 
-        // Inicializar enlace al cargar la página
+        // Inicializar al cargar la página
         updateTelegramLink();
+        autoFillReferralCode();
     </script>
 </body>
-</html>
+                </html>

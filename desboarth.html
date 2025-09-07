@@ -365,6 +365,7 @@
         function showDepositModal() {
             document.getElementById('depositModal').style.display = 'flex';
         }
+
         function confirmDeposit() {
             const amount = parseFloat(document.getElementById('depositAmount').value);
             const error = document.getElementById('depositError');
@@ -379,17 +380,36 @@
             document.getElementById('depositModal').style.display = 'none';
             document.getElementById('walletModal').style.display = 'flex';
         }
+
         function confirmPayment() {
             document.getElementById('walletModal').style.display = 'none';
             document.getElementById('paymentConfirmModal').style.display = 'flex';
         }
+
         function showWithdrawModal() {
             document.getElementById('withdrawModal').style.display = 'flex';
         }
+
         function confirmWithdraw() {
             const address = document.getElementById('withdrawAddress').value;
             const amount = parseFloat(document.getElementById('withdrawAmount').value);
             const error = document.getElementById('withdrawError');
+            
+            // Verificar si hay depósito activo
+            if (!depositTime || investedAmount <= 0) {
+                error.textContent = 'No tienes un depósito activo';
+                return;
+            }
+
+            // Verificar tiempo (48 horas = 172800 segundos)
+            const now = Date.now();
+            const elapsed = (now - depositTime) / 1000;
+            if (elapsed < 172800) {
+                error.textContent = 'No puedes retirar antes de 48 horas desde el depósito';
+                return;
+            }
+
+            // Verificar monto (máximo el doble del depósito)
             if (!address) {
                 error.textContent = 'La dirección es obligatoria';
                 return;
@@ -398,12 +418,19 @@
                 error.textContent = 'El monto mínimo es 5 USDT';
                 return;
             }
+            if (amount > investedAmount * 2) {
+                error.textContent = 'El monto a retirar no puede superar el doble del depósito';
+                return;
+            }
+
             document.getElementById('withdrawModal').style.display = 'none';
             document.getElementById('withdrawConfirmModal').style.display = 'flex';
         }
+
         function closeModals() {
             document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
         }
+
         function toggleInvestment() {
             const investment = document.getElementById('investment');
             if (investment.style.display === 'block') {
@@ -414,6 +441,7 @@
                 document.getElementById('referrals').style.display = 'none';
             }
         }
+
         function showReferrals() {
             document.getElementById('referrals').style.display = 'block';
             document.getElementById('investment').style.display = 'none';
@@ -423,6 +451,7 @@
             document.getElementById('referralLink').textContent = referralLink;
             document.getElementById('referralCount').textContent = '0';
         }
+
         function copyReferralLink() {
             const referralLink = document.getElementById('referralLink').textContent;
             navigator.clipboard.writeText(referralLink).then(() => {
@@ -436,4 +465,4 @@
         showNotification();
     </script>
 </body>
-            </html>
+    </html>

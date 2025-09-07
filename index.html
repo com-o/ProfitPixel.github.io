@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfitPixel - Duplica tus Ganancias</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #2c2c2c;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #4caf50;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            background-color: #3c3c3c;
+            color: #ffffff;
+        }
+        input::placeholder {
+            color: #aaaaaa;
+        }
+        button {
+            background-color: #4caf50;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        .error {
+            color: #f44336;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .telegram-button {
+            position: fixed;
+            bottom: 40px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: block;
+        }
+        .telegram-button svg {
+            width: 100%;
+            height: 100%;
+            transition: filter 0.3s;
+        }
+        .telegram-button:hover svg circle {
+            fill: #1A8CCB; /* Oscurece el círculo al hacer hover */
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #aaaaaa;
+        }
+        .footer a {
+            color: #4caf50;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer .secure {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .footer .secure::before {
+            content: '🔒';
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>ProfitPixel</h1>
+        <p>¡Duplica tus ganancias en 48 horas!</p>
+        <input type="email" id="email" placeholder="Correo (@gmail.com)" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <input type="text" id="referral" placeholder="Código de Referido" required>
+        <button onclick="login()">Iniciar Sesión</button>
+        <p id="error" class="error"></p>
+    </div>
+    <a href="https://t.me/ProfiPixel" class="telegram-button">
+        <svg viewBox="0 0 512 512" role="img" aria-label="Logo estilo Telegram">
+            <defs>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="10" flood-opacity="0.18"/>
+                </filter>
+            </defs>
+            <g filter="url(#shadow)">
+                <circle cx="256" cy="256" r="240" fill="#2AABEE"/>
+            </g>
+            <path d="M118 255 L418 106 L349 409 L257 330 L200 380 L192 268 Z" fill="#FFFFFF"/>
+            <path d="M418 106 L257 330 L233 306 L350 214 Z" fill="#D8ECFF" opacity="0.9"/>
+            <path d="M118 255 L206 287 L192 268 Z" fill="#D8ECFF" opacity="0.9"/>
+        </svg>
+    </a>
+    <div class="footer">
+        <div class="secure">Plataforma Segura</div>
+        <a href="#">Términos y Condiciones</a> | <a href="#">Política de Privacidad</a>
+    </div>
+    <script>
+        function generateReferralCode(email) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            const hash = email.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+            for (let i = 0; i < 5; i++) {
+                code += chars[(hash + i * 13) % chars.length];
+            }
+            return code;
+        }
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const referral = document.getElementById('referral').value;
+            const error = document.getElementById('error');
+            if (!email.endsWith('@gmail.com')) {
+                error.textContent = 'El correo debe terminar en @gmail.com';
+                return;
+            }
+            if (!password) {
+                error.textContent = 'La contraseña no puede estar vacía';
+                return;
+            }
+            if (!referral) {
+                error.textContent = 'El código de referido es obligatorio';
+                return;
+            }
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('referralCode', generateReferralCode(email));
+            window.location.href = 'desboarth.html';
+        }
+    </script>
+</body>
+                                                   </html>

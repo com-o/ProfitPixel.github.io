@@ -217,7 +217,7 @@
         </div>
         <div class="testimonials">
             <h2>Testimonios</h2>
-            <p>"¡Dupliqué mis 50 USDT en 48 horas! Gran plataforma." - Carlos G.</p>
+            <p>"¡Dupliqué mis 50 USDT en 24 horas! Gran plataforma." - Carlos G.</p>
             <p>"Fácil de usar y resultados rápidos. ¡Recomendado!" - Ana M.</p>
             <p>"El soporte en Telegram es súper útil." - Luis R.</p>
         </div>
@@ -324,7 +324,7 @@
             if (depositTime && investedAmount > 0) {
                 const now = Date.now();
                 const elapsed = (now - depositTime) / 1000;
-                const totalTime = 48 * 3600;
+                const totalTime = 24 * 3600; // Cambiado de 48 a 24 horas
                 let progress = Math.min((elapsed / totalTime) * 100, 100).toFixed(1);
                 let status = progress >= 100 ? 'Terminado' : 'En Curso';
                 if (document.getElementById('investment').style.display === 'block') {
@@ -401,11 +401,11 @@
                 return;
             }
 
-            // Verificar tiempo (48 horas = 172800 segundos)
+            // Verificar tiempo (24 horas = 86400 segundos)
             const now = Date.now();
             const elapsed = (now - depositTime) / 1000;
-            if (elapsed < 172800) {
-                error.textContent = 'No puedes retirar antes de 48 horas desde el depósito';
+            if (elapsed < 86400) {
+                error.textContent = 'No puedes retirar antes de 24 horas desde el depósito';
                 return;
             }
 
